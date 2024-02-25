@@ -1,6 +1,5 @@
 package xyz.immortalforest.widgets
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -24,7 +23,6 @@ import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
-import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
@@ -63,7 +61,6 @@ private object SpotifyWidget : GlanceAppWidget() {
         mutableStateOf(Bitmap.createBitmap(150, 150, Bitmap.Config.ARGB_8888))
     private val pauseState = mutableStateOf(false)
 
-    @SuppressLint("CoroutineCreationDuringComposition")
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         connectToSpotify(context, id)
 
