@@ -206,15 +206,17 @@ private object SpotifyWidget : GlanceAppWidget() {
         isPaused: Boolean,
     ) {
 
-        Box {
-            Column(
-                modifier = GlanceModifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalAlignment = Alignment.Horizontal.CenterHorizontally
+        Box(
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = GlanceModifier.size(150.dp)
             ) {
                 Box(
-                    modifier = GlanceModifier.size(150.dp)
-                        .cornerRadius(12.dp)
+                    modifier = GlanceModifier.fillMaxSize()
+                        .cornerRadius(12.dp),
+                    contentAlignment = Alignment.Center
                 ) {
                     Image(
                         provider = ImageProvider(imageBitmap),
@@ -224,23 +226,24 @@ private object SpotifyWidget : GlanceAppWidget() {
                         contentScale = ContentScale.FillBounds
                     )
                 }
+                Box(
+                    modifier = GlanceModifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+                    Box(
+                        modifier = GlanceModifier.size(16.dp)
+                            .padding(end = 4.dp, top = 4.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            provider = ImageProvider(R.drawable.spotify),
+                            contentDescription = "Spotify icon",
+                        )
+                    }
+                }
             }
         }
-        Box(
-            modifier = GlanceModifier.fillMaxSize(),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            Box(
-                modifier = GlanceModifier.size(40.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    provider = ImageProvider(R.drawable.spotify),
-                    contentDescription = "Spotify icon",
-//                    contentScale = ContentScale.FillBounds
-                )
-            }
-        }
+
         Box(
             modifier = GlanceModifier.fillMaxSize(),
             contentAlignment = Alignment.BottomStart
