@@ -189,7 +189,7 @@ private object SpotifyWidget : GlanceAppWidget() {
                 horizontalAlignment = Alignment.Horizontal.CenterHorizontally
             ) {
                 Box(
-                    modifier = GlanceModifier.size(160.dp)
+                    modifier = GlanceModifier.size(150.dp)
                         .cornerRadius(12.dp)
                 ) {
                     Image(
@@ -200,6 +200,21 @@ private object SpotifyWidget : GlanceAppWidget() {
                         contentScale = ContentScale.FillBounds
                     )
                 }
+            }
+        }
+        Box(
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            Box(
+                modifier = GlanceModifier.size(40.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    provider = ImageProvider(R.drawable.spotify),
+                    contentDescription = "Spotify icon",
+//                    contentScale = ContentScale.FillBounds
+                )
             }
         }
         Box(
