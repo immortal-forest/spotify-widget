@@ -1,6 +1,8 @@
 # Spotify Widget
 
 Didn't like Spotify's widget, so made my own.
+Due to limitations of Glance and skill issue, the UI isn't good.
+Currently, working on more designs.
 
 ## How it looks?
 
