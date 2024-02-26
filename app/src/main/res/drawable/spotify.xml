@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/spotify_background"
+        android:width="680dp"
+        android:gravity="center_horizontal|center_vertical"
+        android:height="580dp"/>
+    <item android:drawable="@drawable/spotify_foreground" />
+</layer-list>
