@@ -66,9 +66,9 @@ private object SpotifyWidget : GlanceAppWidget() {
     private val pauseState = mutableStateOf(false)
 
     private val smallSize = DpSize(193.66667.dp, 169.33333.dp)
-
-    //    private val mediumSize = DpSize()
+//    private val mediumSize = DpSize(258.22266.dp, 169.33333.dp)
 //    private val largeSize = DpSize()
+
     override val sizeMode: SizeMode = SizeMode.Responsive(listOf(smallSize).toSet())
 
 
@@ -77,26 +77,10 @@ private object SpotifyWidget : GlanceAppWidget() {
 
         provideContent {
             GlanceTheme {
-                if (LocalSize.current == smallSize) {
-                    if (loadingState.value.not() && spotifyAppRemote == null) {
-                        Loading()
-                    } else {
-                        WidgetContent(
-                            playerRestrictions.value,
-                            imageBitmapState.value,
-                            {
-                                ContextCompat.startActivity(
-                                    context, Intent(Intent.ACTION_VIEW, Uri.parse("spotify:app"))
-                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                                    Bundle.EMPTY
-                                )
-                                reloadImage(context, id, imageUri.value)
-                            },
-                            pauseState.value
-                        )
-                    }
-                } else {
+                if (loadingState.value.not() && spotifyAppRemote == null) {
                     Loading()
+                } else {
+                    ResponsiveContent(context = context, id = id, size = LocalSize.current)
                 }
             }
         }
@@ -190,7 +174,32 @@ private object SpotifyWidget : GlanceAppWidget() {
     }
 
     @Composable
-    private fun WidgetContent(
+    private fun ResponsiveContent(
+        context: Context,
+        id: GlanceId,
+        size: DpSize,
+    ) {
+        if (LocalSize.current == size) {
+            SmallContent(
+                playerRestrictions.value,
+                imageBitmapState.value,
+                {
+                    ContextCompat.startActivity(
+                        context, Intent(Intent.ACTION_VIEW, Uri.parse("spotify:app"))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                        Bundle.EMPTY
+                    )
+                    reloadImage(context, id, imageUri.value)
+                },
+                pauseState.value
+            )
+        }  else {
+            Loading()
+        }
+    }
+
+    @Composable
+    private fun SmallContent(
         playerRestrictions: PlayerRestrictions,
         imageBitmap: Bitmap,
         imageClick: () -> Unit,
