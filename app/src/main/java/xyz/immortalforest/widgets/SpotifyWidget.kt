@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.glance.GlanceId
@@ -17,12 +18,14 @@ import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
 import androidx.glance.Image
 import androidx.glance.ImageProvider
+import androidx.glance.LocalSize
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.CircularProgressIndicator
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
+import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
 import androidx.glance.appwidget.cornerRadius
@@ -48,6 +51,7 @@ import kotlinx.coroutines.launch
 
 
 class SpotifyWidgetReceiver : GlanceAppWidgetReceiver() {
+
     override val glanceAppWidget: GlanceAppWidget = SpotifyWidget
 }
 
@@ -61,27 +65,38 @@ private object SpotifyWidget : GlanceAppWidget() {
         mutableStateOf(Bitmap.createBitmap(150, 150, Bitmap.Config.ARGB_8888))
     private val pauseState = mutableStateOf(false)
 
+    private val smallSize = DpSize(193.66667.dp, 169.33333.dp)
+
+    //    private val mediumSize = DpSize()
+//    private val largeSize = DpSize()
+    override val sizeMode: SizeMode = SizeMode.Responsive(listOf(smallSize).toSet())
+
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         connectToSpotify(context, id)
 
         provideContent {
             GlanceTheme {
-                if (loadingState.value.not() && spotifyAppRemote == null) {
-                    Loading()
+                if (LocalSize.current == smallSize) {
+                    if (loadingState.value.not() && spotifyAppRemote == null) {
+                        Loading()
+                    } else {
+                        WidgetContent(
+                            playerRestrictions.value,
+                            imageBitmapState.value,
+                            {
+                                ContextCompat.startActivity(
+                                    context, Intent(Intent.ACTION_VIEW, Uri.parse("spotify:app"))
+                                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+                                    Bundle.EMPTY
+                                )
+                                reloadImage(context, id, imageUri.value)
+                            },
+                            pauseState.value
+                        )
+                    }
                 } else {
-                    WidgetContent(
-                        playerRestrictions.value,
-                        imageBitmapState.value,
-                        {
-                            ContextCompat.startActivity(
-                                context, Intent(Intent.ACTION_VIEW, Uri.parse("spotify:app"))
-                                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                                Bundle.EMPTY
-                            )
-                            reloadImage(context, id, imageUri.value)
-                        },
-                        pauseState.value
-                    )
+                    Loading()
                 }
             }
         }
