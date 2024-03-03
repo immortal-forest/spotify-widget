@@ -41,7 +41,8 @@
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/spotify_widget_info" />
+                android:resource="@xml/medium_widget_info"/>
+
         </receiver>
 
     </application>
