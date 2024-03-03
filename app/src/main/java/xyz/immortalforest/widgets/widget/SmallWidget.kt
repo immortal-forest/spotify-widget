@@ -5,12 +5,14 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
+import androidx.palette.graphics.Palette
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerRestrictions
@@ -40,6 +42,12 @@ class SmallWidget : GlanceAppWidget() {
     private val playerRestrictions = mutableStateOf(PlayerRestrictions.DEFAULT)
     private val paused = mutableStateOf(true)
 
+    private val defaultContainerColor = (0xFF888888).toInt()
+    private val defaultIconColor = (0xFF000000).toInt()
+
+    private val containerColor = mutableStateOf(Color(defaultContainerColor).copy(alpha = 0.5f))
+    private val iconColor = mutableStateOf(Color(defaultIconColor))
+
 
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
@@ -58,6 +66,8 @@ class SmallWidget : GlanceAppWidget() {
                     playerRestrictions.value,
                     image.value.bitmap,
                     paused.value,
+                    containerColor.value,
+                    iconColor.value,
                     {
                         ContextCompat.startActivity(
                             context,
@@ -121,6 +131,19 @@ class SmallWidget : GlanceAppWidget() {
                             playerState.track.imageUri,
                             bitmap
                         )
+                        CoroutineScope(Dispatchers.IO).launch {
+                            Palette.from(bitmap).generate().let { palette ->
+                                containerColor.value =
+                                    (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
+                                        ?: Color(defaultContainerColor)).copy(
+                                        alpha = 0.5f
+                                    )
+                                iconColor.value =
+                                    (palette.darkVibrantSwatch?.titleTextColor?.let { Color(it) }
+                                        ?: Color(defaultIconColor))
+                            }
+                            updateUI(context, id)
+                        }
                     }
             }
             if (playerRestrictions.value != playerState.playbackRestrictions) {

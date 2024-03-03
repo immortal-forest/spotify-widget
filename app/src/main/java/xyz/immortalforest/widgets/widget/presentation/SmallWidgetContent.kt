@@ -2,9 +2,10 @@ package xyz.immortalforest.widgets.widget.presentation
 
 import android.content.Context
 import android.graphics.Bitmap
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.glance.ColorFilter
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.Image
@@ -19,6 +20,7 @@ import androidx.glance.layout.Row
 import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
+import androidx.glance.unit.ColorProvider
 import com.spotify.protocol.types.PlayerRestrictions
 import xyz.immortalforest.widgets.R
 import xyz.immortalforest.widgets.widget.SpotifyHelper
@@ -30,6 +32,8 @@ fun SmallContent(
     playerRestrictions: PlayerRestrictions,
     imageBitmap: Bitmap,
     isPaused: Boolean,
+    containerColor: Color,
+    iconColor: Color,
     imageClick: () -> Unit,
     onSuccessAction: (Context, GlanceId) -> Unit,
     onErrorAction: () -> Unit,
@@ -80,9 +84,7 @@ fun SmallContent(
         Box(
             modifier = GlanceModifier
                 .background(
-                    MaterialTheme.colorScheme.secondary.copy(
-                        alpha = 0.5f
-                    )
+                    containerColor
                 ).size(130.dp, 50.dp).cornerRadius(12.dp),
         ) {
             Row(
@@ -104,6 +106,7 @@ fun SmallContent(
                         .cornerRadius(16.dp),
                     provider = ImageProvider(R.drawable.prev_foreground),
                     contentDescription = "Previous",
+                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                 )
                 Image(
                     modifier = GlanceModifier.size(40.dp).clickable {
@@ -127,7 +130,8 @@ fun SmallContent(
                             R.drawable.pause_foreground
                         }
                     ),
-                    contentDescription = "Play"
+                    contentDescription = "Play",
+                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                 )
                 Image(
                     modifier = GlanceModifier.size(40.dp).clickable {
@@ -141,7 +145,8 @@ fun SmallContent(
                     }
                         .cornerRadius(16.dp),
                     provider = ImageProvider(R.drawable.next_foreground),
-                    contentDescription = "Next"
+                    contentDescription = "Next",
+                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                 )
             }
 
