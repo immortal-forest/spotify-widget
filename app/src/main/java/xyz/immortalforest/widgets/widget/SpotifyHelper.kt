@@ -2,14 +2,9 @@ package xyz.immortalforest.widgets.widget
 
 import android.content.Context
 import androidx.glance.GlanceId
-import androidx.glance.LocalContext
-import androidx.glance.action.ActionParameters
-import androidx.glance.appwidget.action.ActionCallback
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
-import com.spotify.protocol.client.CallResult
-import com.spotify.protocol.types.Empty
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -103,6 +98,7 @@ class SpotifyHelper {
                     }
                 }
             }
+
             "next" -> {
                 if (value.toBoolean()) {
                     spotifyAppRemote!!.playerApi.skipNext().setResultCallback {
@@ -110,16 +106,19 @@ class SpotifyHelper {
                     }
                 }
             }
+
             "play" -> {
                 spotifyAppRemote!!.playerApi.resume().setResultCallback {
                     onSuccess(context, glanceId)
                 }
             }
+
             "pause" -> {
                 spotifyAppRemote!!.playerApi.pause().setResultCallback {
                     onSuccess(context, glanceId)
                 }
             }
+
             else -> {}
         }
         actionRunning = false

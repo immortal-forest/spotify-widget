@@ -14,7 +14,7 @@ class WTrack(
 ) {
     constructor(
         name: String,
-    ): this(
+    ) : this(
         name,
         "",
         ImageUri(""),
@@ -24,7 +24,7 @@ class WTrack(
 
     constructor(
         track: Track
-    ): this(
+    ) : this(
         track.name,
         track.uri,
         track.imageUri,

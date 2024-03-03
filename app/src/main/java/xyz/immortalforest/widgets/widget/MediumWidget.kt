@@ -14,16 +14,15 @@ import kotlinx.coroutines.launch
 import xyz.immortalforest.widgets.widget.models.WImage
 import xyz.immortalforest.widgets.widget.models.WTrack
 import xyz.immortalforest.widgets.widget.presentation.Loading
-import xyz.immortalforest.widgets.widget.presentation.MediumContent
 
-class MediumWidgetReceiver: GlanceAppWidgetReceiver() {
+class MediumWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
         get() = MediumWidget()
 
 }
 
 
-class MediumWidget: GlanceAppWidget() {
+class MediumWidget : GlanceAppWidget() {
 
     // spotify
     private val spotifyHelper = SpotifyHelper()
@@ -82,9 +81,10 @@ class MediumWidget: GlanceAppWidget() {
         spotifyAppRemote!!.playerApi.subscribeToPlayerState().setEventCallback { playerState ->
             paused.value = playerState.isPaused
             if (image.value.uri != playerState.track.imageUri) {
-                spotifyAppRemote!!.imagesApi.getImage(playerState.track.imageUri).setResultCallback { bitmap ->
-                    image.value = WImage(playerState.track.imageUri, bitmap)
-                }
+                spotifyAppRemote!!.imagesApi.getImage(playerState.track.imageUri)
+                    .setResultCallback { bitmap ->
+                        image.value = WImage(playerState.track.imageUri, bitmap)
+                    }
             }
             if (playerRestrictions.value != playerState.playbackRestrictions) {
                 playerRestrictions.value = playerState.playbackRestrictions

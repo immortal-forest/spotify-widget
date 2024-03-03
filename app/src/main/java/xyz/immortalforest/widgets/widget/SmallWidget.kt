@@ -22,13 +22,13 @@ import xyz.immortalforest.widgets.widget.presentation.Loading
 import xyz.immortalforest.widgets.widget.presentation.SmallContent
 
 
-class SmallWidgetReceiver: GlanceAppWidgetReceiver() {
+class SmallWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
         get() = SmallWidget()
 }
 
 
-class SmallWidget: GlanceAppWidget() {
+class SmallWidget : GlanceAppWidget() {
 
     // spotify stuff
     private val spotifyHelper = SpotifyHelper()
@@ -60,7 +60,8 @@ class SmallWidget: GlanceAppWidget() {
                     paused.value,
                     {
                         ContextCompat.startActivity(
-                            context, Intent(Intent.ACTION_VIEW, Uri.parse("spotify:track:${trackUri.value}"))
+                            context,
+                            Intent(Intent.ACTION_VIEW, Uri.parse("spotify:track:${trackUri.value}"))
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                             Bundle.EMPTY
                         )
@@ -114,12 +115,13 @@ class SmallWidget: GlanceAppWidget() {
                 paused.value = playerState.isPaused
             }
             if (image.value.uri != playerState.track.imageUri) {
-                spotifyAppRemote!!.imagesApi.getImage(playerState.track.imageUri).setResultCallback { bitmap ->
-                    image.value = WImage(
-                        playerState.track.imageUri,
-                        bitmap
-                    )
-                }
+                spotifyAppRemote!!.imagesApi.getImage(playerState.track.imageUri)
+                    .setResultCallback { bitmap ->
+                        image.value = WImage(
+                            playerState.track.imageUri,
+                            bitmap
+                        )
+                    }
             }
             if (playerRestrictions.value != playerState.playbackRestrictions) {
                 playerRestrictions.value = playerState.playbackRestrictions
