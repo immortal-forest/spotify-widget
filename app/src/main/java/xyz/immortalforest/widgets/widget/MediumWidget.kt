@@ -2,6 +2,8 @@ package xyz.immortalforest.widgets.widget
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +15,12 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.palette.graphics.Palette
+import coil.ImageLoader
+import coil.decode.BitmapFactoryDecoder
+import coil.decode.Decoder
+import coil.disk.DiskCache
+import coil.request.ImageRequest
+import coil.request.Parameters
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerRestrictions
@@ -23,6 +31,8 @@ import xyz.immortalforest.widgets.widget.models.WImage
 import xyz.immortalforest.widgets.widget.models.WTrack
 import xyz.immortalforest.widgets.widget.presentation.Loading
 import xyz.immortalforest.widgets.widget.presentation.MediumContent
+import xyz.immortalforest.widgets.widget.util.SpotifyHelper
+import java.io.File
 
 class MediumWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
@@ -49,10 +59,22 @@ class MediumWidget : GlanceAppWidget() {
     private val containerTextColor = mutableStateOf(Color.Black)
     private val iconColor = mutableStateOf(Color.Black)
 
+    private lateinit var imageLoader: ImageLoader
+
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        imageLoader = ImageLoader.Builder(context.applicationContext)
+            .diskCache {
+                val cacheDir = File(context.externalCacheDir?.absolutePath.toString(), "album")
+                cacheDir.mkdirs()
+                DiskCache.Builder()
+                    .directory(cacheDir)
+                    .maxSizeBytes(1024 * 1024 * 69)
+                    .build()
+            }
+            .build()
         spotifyHelper.new(context, id)
         connectToSpotify()
 
@@ -124,42 +146,73 @@ class MediumWidget : GlanceAppWidget() {
             loading.value = true
         }
         spotifyAppRemote!!.playerApi.subscribeToPlayerState().setEventCallback { playerState ->
-            paused.value = playerState.isPaused
+            if (paused.value != playerState.isPaused) {
+                paused.value = playerState.isPaused
+            }
             if (track.value.uri != playerState.track.uri) {
-                track.value = WTrack().createTrack(playerState.track)
-                updateUI(context, id)
+                track.value = WTrack(playerState.track)
+                if (image.value.uri != playerState.track.imageUri) {
+                    loadImage(context, id, playerState.track.imageUri)
+                }
             }
-            if (image.value.uri != playerState.track.imageUri) {
-                spotifyAppRemote!!.imagesApi.getImage(playerState.track.imageUri)
-                    .setResultCallback { bitmap ->
-                        image.value = WImage(playerState.track.imageUri, bitmap)
-                        CoroutineScope(Dispatchers.IO).launch {
-                            Palette.from(bitmap).generate().let { palette ->
-                                containerColor.value =
-                                    (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
-                                        ?: Color(defaultContainerColor)).copy(
-                                        alpha = 0.8f
-                                    )
-                                containerTextColor.value =
-                                    (palette.lightVibrantSwatch?.titleTextColor?.let { Color(it) }
-                                        ?: Color.Black)
-                                iconColor.value =
-                                    (palette.darkVibrantSwatch?.rgb?.let { Color(it) }
-                                        ?: Color.Black)
-                            }
-                            updateUI(context, id)
-                        }
-                    }
+            if (playerRestrictions.value != playerState.playbackRestrictions) {
+                playerRestrictions.value = playerState.playbackRestrictions
             }
-            playerRestrictions.value = playerState.playbackRestrictions
             updateUI(context, id)
+        }.setErrorCallback {
+            paused.value = true
+            updateUI(context, id)
+            connectToSpotify()
         }
     }
 
-    private fun loadImage(imageUri: ImageUri) {
-        spotifyAppRemote!!.imagesApi.getImage(imageUri).setResultCallback {
-            image.value = WImage(imageUri, it)
-        }
+    private fun loadImage(context: Context, id: GlanceId, imageUri: ImageUri) {
+        val uri = Regex("spotify:image:(.*)").find(imageUri.raw.toString())?.groups?.get(1)?.value
+            ?: imageUri.raw.toString().replace("spotify:image:", "")
+
+        val request = ImageRequest.Builder(context)
+            .data("https://i.scdn.co/image/$uri")
+            .parameters(
+                Parameters.Builder()
+                    .set("Content-Type", "image/jpeg")
+                    .build()
+            )
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            .decoderFactory(
+                Decoder.Factory { result, options, _ ->
+                    return@Factory BitmapFactoryDecoder(result.source, options)
+                }
+            )
+            .allowHardware(true)
+            .target { drawable ->
+                val bitMap = Bitmap.createScaledBitmap(
+                    (drawable as BitmapDrawable).bitmap,
+                    (92 * 2.5).toInt(), (95 * 2.5).toInt(),
+                    true
+                )
+                image.value = WImage(
+                    imageUri,
+                    bitMap
+                )
+                CoroutineScope(Dispatchers.IO).launch {
+                    Palette.from(bitMap).generate().let { palette ->
+                        containerColor.value =
+                            (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
+                                ?: Color(defaultContainerColor)).copy(
+                                alpha = 0.8f
+                            )
+                        containerTextColor.value =
+                            (palette.lightVibrantSwatch?.titleTextColor?.let { Color(it) }
+                                ?: Color.Black)
+                        iconColor.value =
+                            (palette.darkVibrantSwatch?.rgb?.let { Color(it) }
+                                ?: Color.Black)
+                    }
+                    updateUI(context, id)
+                }
+            }
+            .build()
+        imageLoader.enqueue(request)
     }
 
 }
