@@ -23,7 +23,7 @@ import androidx.glance.layout.size
 import androidx.glance.unit.ColorProvider
 import com.spotify.protocol.types.PlayerRestrictions
 import xyz.immortalforest.widgets.R
-import xyz.immortalforest.widgets.widget.SpotifyHelper
+import xyz.immortalforest.widgets.widget.util.SpotifyHelper
 
 @Composable
 fun SmallContent(

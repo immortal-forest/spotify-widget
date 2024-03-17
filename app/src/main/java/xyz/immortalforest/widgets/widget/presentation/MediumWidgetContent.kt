@@ -34,8 +34,8 @@ import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import com.spotify.protocol.types.PlayerRestrictions
 import xyz.immortalforest.widgets.R
-import xyz.immortalforest.widgets.widget.SpotifyHelper
 import xyz.immortalforest.widgets.widget.models.WTrack
+import xyz.immortalforest.widgets.widget.util.SpotifyHelper
 
 @Composable
 fun MediumContent(
