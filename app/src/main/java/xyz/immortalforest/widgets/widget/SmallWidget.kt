@@ -96,7 +96,9 @@ class SmallWidget : GlanceAppWidget() {
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
                             Bundle.EMPTY
                         )
-                        loadImage(image.value.uri)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            loadImage(context, id, image.value.uri)
+                        }
                     },
                     { context, id ->
                         updateUI(context, id)
@@ -123,15 +125,19 @@ class SmallWidget : GlanceAppWidget() {
     }
 
     private fun connectToSpotify() {
+        spotifyHelper.disconnect()
         spotifyHelper.connectToSpotify(
             onConnect = { context, id, appRemote ->
                 spotifyAppRemote = appRemote
                 updateUI(context, id)
-                listenToUpdates(context, id)
+                CoroutineScope(Dispatchers.IO).launch {
+                    listenToUpdates(context, id)
+                }
             },
             onError = { context, id ->
                 paused.value = true
                 updateUI(context, id)
+                connectToSpotify()
             },
         )
 
