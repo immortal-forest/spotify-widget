@@ -75,7 +75,7 @@ fun MediumContent(
 
                     Box(
                         modifier = GlanceModifier
-                            .size(89.dp, 95.dp)
+                            .size(92.dp, 95.dp)
                             .cornerRadius(12.dp),
                         contentAlignment = Alignment.Center
                     ) {
