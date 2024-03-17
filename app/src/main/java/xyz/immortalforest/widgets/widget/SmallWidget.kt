@@ -181,11 +181,10 @@ class SmallWidget : GlanceAppWidget() {
                     return@Factory BitmapFactoryDecoder(result.source, options)
                 }
             )
-            .allowHardware(true)
             .target { drawable ->
                 val bitMap = Bitmap.createScaledBitmap(
                     (drawable as BitmapDrawable).bitmap,
-                    (150 * 2.69).toInt(), (150 * 2.69).toInt(),
+                    (150 * 2.6).toInt(), (150 * 2.6).toInt(),
                     true
                 )
                 image.value = WImage(

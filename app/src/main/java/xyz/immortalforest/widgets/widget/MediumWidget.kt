@@ -189,7 +189,6 @@ class MediumWidget : GlanceAppWidget() {
                     return@Factory BitmapFactoryDecoder(result.source, options)
                 }
             )
-            .allowHardware(true)
             .target { drawable ->
                 val bitMap = Bitmap.createScaledBitmap(
                     (drawable as BitmapDrawable).bitmap,
