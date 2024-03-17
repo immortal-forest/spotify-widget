@@ -73,6 +73,7 @@ dependencies {
     implementation("androidx.glance:glance:1.0.0")
     implementation("androidx.glance:glance-appwidget:1.0.0")
     implementation("androidx.glance:glance-material3:1.0.0")
+    implementation("io.coil-kt:coil:2.6.0")
     implementation("com.google.code.gson:gson:2.10")
     implementation(files("../libs/spotify-app-remote-release-0.8.0.aar"))
 
