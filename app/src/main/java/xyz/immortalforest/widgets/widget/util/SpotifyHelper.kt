@@ -1,4 +1,4 @@
-package xyz.immortalforest.widgets.widget
+package xyz.immortalforest.widgets.widget.util
 
 import android.content.Context
 import androidx.glance.GlanceId
@@ -78,7 +78,8 @@ class SpotifyHelper {
                 onAction(
                     action,
                     value,
-                    onSuccess
+                    onSuccess,
+                    onError
                 )
             }
         }
@@ -88,13 +89,16 @@ class SpotifyHelper {
     private fun onAction(
         action: String,
         value: String,
-        onSuccess: (Context, GlanceId) -> Unit
+        onSuccess: (Context, GlanceId) -> Unit,
+        onError: () -> Unit
     ) {
         when (action) {
             "prev" -> {
                 if (value.toBoolean()) {
                     spotifyAppRemote!!.playerApi.skipPrevious().setResultCallback {
                         onSuccess(context, glanceId)
+                    }.setErrorCallback {
+                        onError()
                     }
                 }
             }
@@ -103,6 +107,8 @@ class SpotifyHelper {
                 if (value.toBoolean()) {
                     spotifyAppRemote!!.playerApi.skipNext().setResultCallback {
                         onSuccess(context, glanceId)
+                    }.setErrorCallback {
+                        onError()
                     }
                 }
             }
@@ -110,12 +116,16 @@ class SpotifyHelper {
             "play" -> {
                 spotifyAppRemote!!.playerApi.resume().setResultCallback {
                     onSuccess(context, glanceId)
+                }.setErrorCallback {
+                    onError()
                 }
             }
 
             "pause" -> {
                 spotifyAppRemote!!.playerApi.pause().setResultCallback {
                     onSuccess(context, glanceId)
+                }.setErrorCallback {
+                    onError()
                 }
             }
 
