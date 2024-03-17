@@ -5,20 +5,19 @@ import com.spotify.protocol.types.Artist
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.Track
 
-class WTrack {
+class WTrack() {
     var name: String = "empty"
     var uri: String = ""
     var imageUri: ImageUri = ImageUri("")
     var artists: List<Artist> = emptyList()
     var album: Album = Album("", "")
 
-    fun createTrack(track: Track): WTrack {
+    constructor (track: Track) : this() {
         this.name = track.name
         this.uri = track.uri
         this.imageUri = track.imageUri
         this.artists = track.artists
         this.album = track.album
-        return this
     }
 
     fun getArtists(): String {
