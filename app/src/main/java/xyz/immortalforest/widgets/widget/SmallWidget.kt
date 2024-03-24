@@ -1,19 +1,22 @@
 package xyz.immortalforest.widgets.widget
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.net.Uri
-import android.os.Bundle
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
+import androidx.glance.layout.Alignment
+import androidx.glance.layout.Column
+import androidx.glance.text.FontWeight
+import androidx.glance.text.Text
+import androidx.glance.text.TextAlign
+import androidx.glance.text.TextStyle
+import androidx.glance.unit.ColorProvider
 import androidx.palette.graphics.Palette
 import coil.ImageLoader
 import coil.decode.BitmapFactoryDecoder
@@ -28,7 +31,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import xyz.immortalforest.widgets.widget.models.WImage
 import xyz.immortalforest.widgets.widget.presentation.Loading
-import xyz.immortalforest.widgets.widget.presentation.SmallContent
 import xyz.immortalforest.widgets.widget.util.SpotifyHelper
 import java.io.File
 
@@ -78,34 +80,18 @@ class SmallWidget : GlanceAppWidget() {
         connectToSpotify()
 
         provideContent {
-            if (!loading.value && spotifyAppRemote == null) {
-                Loading()
-            } else {
-                SmallContent(
-                    spotifyHelper,
-                    loading.value,
-                    playerRestrictions.value,
-                    image.value.bitmap,
-                    paused.value,
-                    containerColor.value,
-                    iconColor.value,
-                    {
-                        ContextCompat.startActivity(
-                            context,
-                            Intent(Intent.ACTION_VIEW, Uri.parse("spotify:track:${trackUri.value}"))
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
-                            Bundle.EMPTY
-                        )
-                        CoroutineScope(Dispatchers.IO).launch {
-                            loadImage(context, id, image.value.uri)
-                        }
-                    },
-                    { context, id ->
-                        updateUI(context, id)
-                    }
-                ) {
-                    connectToSpotify()
-                }
+            Column(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Under redesign",
+                    style = TextStyle(
+                        color = ColorProvider(Color.Black),
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
+                    )
+                )
             }
 
         }
