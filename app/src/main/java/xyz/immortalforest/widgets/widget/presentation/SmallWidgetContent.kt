@@ -27,50 +27,50 @@ import xyz.immortalforest.widgets.widget.util.SpotifyHelper
 
 @Composable
 fun SmallContent(
-    spotifyHelper: SpotifyHelper,
-    loading: Boolean,
-    playerRestrictions: PlayerRestrictions,
-    imageBitmap: Bitmap,
-    isPaused: Boolean,
-    containerColor: Color,
-    iconColor: Color,
-    imageClick: () -> Unit,
-    onSuccessAction: (Context, GlanceId) -> Unit,
-    onErrorAction: () -> Unit,
+        spotifyHelper: SpotifyHelper,
+        loading: Boolean,
+        playerRestrictions: PlayerRestrictions,
+        imageBitmap: Bitmap,
+        isPaused: Boolean,
+        containerColor: Color,
+        iconColor: Color,
+        imageClick: () -> Unit,
+        onSuccessAction: (Context, GlanceId) -> Unit,
+        onErrorAction: () -> Unit,
 ) {
 
     Box(
-        modifier = GlanceModifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
     ) {
         Box(
-            modifier = GlanceModifier.size(150.dp)
+                modifier = GlanceModifier.size(150.dp)
         ) {
             Box(
-                modifier = GlanceModifier.fillMaxSize()
-                    .cornerRadius(12.dp),
-                contentAlignment = Alignment.Center
+                    modifier = GlanceModifier.fillMaxSize()
+                            .cornerRadius(12.dp),
+                    contentAlignment = Alignment.Center
             ) {
                 Image(
-                    provider = ImageProvider(imageBitmap),
-                    contentDescription = "Album art",
-                    modifier = GlanceModifier.fillMaxSize()
-                        .clickable(imageClick),
-                    contentScale = ContentScale.FillBounds
+                        provider = ImageProvider(imageBitmap),
+                        contentDescription = "Album art",
+                        modifier = GlanceModifier.fillMaxSize()
+                                .clickable(imageClick),
+                        contentScale = ContentScale.FillBounds
                 )
             }
             Box(
-                modifier = GlanceModifier.fillMaxSize(),
-                contentAlignment = Alignment.TopEnd
+                    modifier = GlanceModifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopEnd
             ) {
                 Box(
-                    modifier = GlanceModifier.size(16.dp)
-                        .padding(end = 4.dp, top = 4.dp),
-                    contentAlignment = Alignment.Center
+                        modifier = GlanceModifier.size(16.dp)
+                                .padding(end = 4.dp, top = 4.dp),
+                        contentAlignment = Alignment.Center
                 ) {
                     Image(
-                        provider = ImageProvider(R.drawable.spotify),
-                        contentDescription = "Spotify icon",
+                            provider = ImageProvider(R.drawable.spotify),
+                            contentDescription = "Spotify icon",
                     )
                 }
             }
@@ -78,75 +78,75 @@ fun SmallContent(
     }
 
     Box(
-        modifier = GlanceModifier.fillMaxSize(),
-        contentAlignment = Alignment.BottomStart
+            modifier = GlanceModifier.fillMaxSize(),
+            contentAlignment = Alignment.BottomStart
     ) {
         Box(
-            modifier = GlanceModifier
-                .background(
-                    containerColor
-                ).size(130.dp, 50.dp).cornerRadius(12.dp),
+                modifier = GlanceModifier
+                        .background(
+                                containerColor
+                        ).size(130.dp, 50.dp).cornerRadius(12.dp),
         ) {
             Row(
-                modifier = GlanceModifier.fillMaxSize()
-                    .padding(start = 2.dp, end = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = GlanceModifier.fillMaxSize()
+                            .padding(start = 2.dp, end = 2.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
-                    modifier = GlanceModifier.size(40.dp).clickable {
-                        spotifyHelper.handleAction(
-                            action = "prev",
-                            value = playerRestrictions.canSkipPrev.toString(),
-                            loading = loading,
-                            onSuccess = onSuccessAction,
-                            onError = onErrorAction
-                        )
-                    }
-                        .cornerRadius(16.dp),
-                    provider = ImageProvider(R.drawable.prev_foreground),
-                    contentDescription = "Previous",
-                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
-                )
-                Image(
-                    modifier = GlanceModifier.size(40.dp).clickable {
-                        spotifyHelper.handleAction(
-                            action = if (isPaused) {
-                                "play"
-                            } else {
-                                "pause"
-                            },
-                            value = "",
-                            loading = loading,
-                            onSuccess = onSuccessAction,
-                            onError = onErrorAction
-                        )
-                    }
-                        .cornerRadius(16.dp),
-                    provider = ImageProvider(
-                        if (isPaused) {
-                            R.drawable.play_foreground
-                        } else {
-                            R.drawable.pause_foreground
+                        modifier = GlanceModifier.size(40.dp).clickable {
+                            spotifyHelper.handleAction(
+                                    action = "prev",
+                                    value = playerRestrictions.canSkipPrev.toString(),
+                                    loading = loading,
+                                    onSuccess = onSuccessAction,
+                                    onError = onErrorAction
+                            )
                         }
-                    ),
-                    contentDescription = "Play",
-                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                                .cornerRadius(16.dp),
+                        provider = ImageProvider(R.drawable.prev_foreground),
+                        contentDescription = "Previous",
+                        colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                 )
                 Image(
-                    modifier = GlanceModifier.size(40.dp).clickable {
-                        spotifyHelper.handleAction(
-                            action = "next",
-                            value = playerRestrictions.canSkipNext.toString(),
-                            loading = loading,
-                            onSuccess = onSuccessAction,
-                            onError = onErrorAction
-                        )
-                    }
-                        .cornerRadius(16.dp),
-                    provider = ImageProvider(R.drawable.next_foreground),
-                    contentDescription = "Next",
-                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                        modifier = GlanceModifier.size(40.dp).clickable {
+                            spotifyHelper.handleAction(
+                                    action = if (isPaused) {
+                                        "play"
+                                    } else {
+                                        "pause"
+                                    },
+                                    value = "",
+                                    loading = loading,
+                                    onSuccess = onSuccessAction,
+                                    onError = onErrorAction
+                            )
+                        }
+                                .cornerRadius(16.dp),
+                        provider = ImageProvider(
+                                if (isPaused) {
+                                    R.drawable.play_foreground
+                                } else {
+                                    R.drawable.pause_foreground
+                                }
+                        ),
+                        contentDescription = "Play",
+                        colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                )
+                Image(
+                        modifier = GlanceModifier.size(40.dp).clickable {
+                            spotifyHelper.handleAction(
+                                    action = "next",
+                                    value = playerRestrictions.canSkipNext.toString(),
+                                    loading = loading,
+                                    onSuccess = onSuccessAction,
+                                    onError = onErrorAction
+                            )
+                        }
+                                .cornerRadius(16.dp),
+                        provider = ImageProvider(R.drawable.next_foreground),
+                        contentDescription = "Next",
+                        colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                 )
             }
 
