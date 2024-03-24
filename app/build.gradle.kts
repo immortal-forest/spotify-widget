@@ -11,8 +11,8 @@ android {
         applicationId = "xyz.immortalforest.widgets"
         minSdk = 31
         targetSdk = 34
-        versionCode = 7
-        versionName = "1.1.0"
+        versionCode = 8
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
