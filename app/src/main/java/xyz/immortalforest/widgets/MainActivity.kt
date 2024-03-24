@@ -65,13 +65,6 @@ class MainActivity : ComponentActivity() {
                 fontSize = 16.sp,
                 fontFamily = FontFamily.Default
             )
-            Text(
-                text = "Ideal size: 3x2",
-                fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Normal,
-                fontSize = 14.sp,
-                fontFamily = FontFamily.SansSerif
-            )
         }
     }
 
