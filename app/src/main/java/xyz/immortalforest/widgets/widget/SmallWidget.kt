@@ -157,7 +157,10 @@ class SmallWidget : GlanceAppWidget() {
             if (trackUri.value != playerState.track.uri) {
                 trackUri.value = playerState.track.uri
                 if (image.value.uri != playerState.track.imageUri) {
-                    loadImage(context, id, playerState.track.imageUri)
+                    image.value = WImage(playerState.track.imageUri, image.value.bitmap)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        loadImage(context, id, playerState.track.imageUri)
+                    }
                 }
             }
             updateUI(context, id)
@@ -210,4 +213,3 @@ class SmallWidget : GlanceAppWidget() {
     }
 
 }
-

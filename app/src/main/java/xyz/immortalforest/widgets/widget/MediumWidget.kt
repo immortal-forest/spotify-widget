@@ -103,7 +103,7 @@ class MediumWidget : GlanceAppWidget() {
                             Bundle.EMPTY
                         )
                         CoroutineScope(Dispatchers.IO).launch {
-                            loadImage(context, id, image.value.uri)
+                            loadImage(context, id, track.value.imageUri)
                         }
                     },
                     { context, id ->
@@ -158,7 +158,10 @@ class MediumWidget : GlanceAppWidget() {
             if (track.value.uri != playerState.track.uri) {
                 track.value = WTrack(playerState.track)
                 if (image.value.uri != playerState.track.imageUri) {
-                    loadImage(context, id, playerState.track.imageUri)
+                    image.value = WImage(playerState.track.imageUri, image.value.bitmap)
+                    CoroutineScope(Dispatchers.IO).launch {
+                        loadImage(context, id, playerState.track.imageUri)
+                    }
                 }
             }
             if (playerRestrictions.value != playerState.playbackRestrictions) {
@@ -192,7 +195,7 @@ class MediumWidget : GlanceAppWidget() {
             .target { drawable ->
                 val bitMap = Bitmap.createScaledBitmap(
                     (drawable as BitmapDrawable).bitmap,
-                    (92 * 2.5).toInt(), (95 * 2.5).toInt(),
+                    (92 * 2.69).toInt(), (95 * 2.69).toInt(),
                     true
                 )
                 image.value = WImage(
