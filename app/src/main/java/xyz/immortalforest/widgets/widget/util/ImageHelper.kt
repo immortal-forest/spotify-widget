@@ -3,7 +3,6 @@ package xyz.immortalforest.widgets.widget.util
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.util.Log
 import coil.ImageLoader
 import coil.decode.BitmapFactoryDecoder
 import coil.decode.Decoder
@@ -60,7 +59,6 @@ fun ImageLoader.requestAsyncImage(
             }
         )
         .target {
-            Log.i("Decoder", "Drawable reached!")
             action(it)
         }.build()
     this.enqueue(imageRequest)
