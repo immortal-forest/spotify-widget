@@ -15,12 +15,6 @@ import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.provideContent
 import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.decode.BitmapFactoryDecoder
-import coil.decode.Decoder
-import coil.disk.DiskCache
-import coil.request.ImageRequest
-import coil.request.Parameters
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerRestrictions
@@ -32,7 +26,8 @@ import xyz.immortalforest.widgets.widget.models.WTrack
 import xyz.immortalforest.widgets.widget.presentation.Loading
 import xyz.immortalforest.widgets.widget.presentation.MediumContent
 import xyz.immortalforest.widgets.widget.util.SpotifyHelper
-import java.io.File
+import xyz.immortalforest.widgets.widget.util.imageLoaderr
+import xyz.immortalforest.widgets.widget.util.requestAsyncImage
 
 class MediumWidgetReceiver : GlanceAppWidgetReceiver() {
     override val glanceAppWidget: GlanceAppWidget
@@ -59,22 +54,10 @@ class MediumWidget : GlanceAppWidget() {
     private val containerTextColor = mutableStateOf(Color.Black)
     private val iconColor = mutableStateOf(Color.Black)
 
-    private lateinit var imageLoader: ImageLoader
-
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        imageLoader = ImageLoader.Builder(context.applicationContext)
-            .diskCache {
-                val cacheDir = File(context.externalCacheDir?.absolutePath.toString(), "album")
-                cacheDir.mkdirs()
-                DiskCache.Builder()
-                    .directory(cacheDir)
-                    .maxSizeBytes(1024 * 1024 * 69)
-                    .build()
-            }
-            .build()
         spotifyHelper.new(context, id)
         connectToSpotify()
 
@@ -176,51 +159,35 @@ class MediumWidget : GlanceAppWidget() {
     }
 
     private fun loadImage(context: Context, id: GlanceId, imageUri: ImageUri) {
-        val uri = Regex("spotify:image:(.*)").find(imageUri.raw.toString())?.groups?.get(1)?.value
-            ?: imageUri.raw.toString().replace("spotify:image:", "")
-
-        val request = ImageRequest.Builder(context)
-            .data("https://i.scdn.co/image/$uri")
-            .parameters(
-                Parameters.Builder()
-                    .set("Content-Type", "image/jpeg")
-                    .build()
+        val imageLoader = context.imageLoaderr
+        imageLoader.requestAsyncImage(context, imageUri) { drawable ->
+            val bitMap = Bitmap.createScaledBitmap(
+                (drawable as BitmapDrawable).bitmap,
+                (92 * 2.69).toInt(), (95 * 2.69).toInt(),
+                true
             )
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
-            .decoderFactory(
-                Decoder.Factory { result, options, _ ->
-                    return@Factory BitmapFactoryDecoder(result.source, options)
+            CoroutineScope(Dispatchers.IO).launch {
+                Palette.from(bitMap).generate().let { palette ->
+                    containerColor.value =
+                        (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
+                            ?: Color(defaultContainerColor)).copy(
+                            alpha = 0.8f
+                        )
+                    containerTextColor.value =
+                        (palette.lightVibrantSwatch?.titleTextColor?.let { Color(it) }
+                            ?: Color.Black)
+                    iconColor.value =
+                        (palette.darkVibrantSwatch?.rgb?.let { Color(it) }
+                            ?: Color.Black)
                 }
-            )
-            .target { drawable ->
-                val bitMap = Bitmap.createScaledBitmap(
-                    (drawable as BitmapDrawable).bitmap,
-                    (92 * 2.69).toInt(), (95 * 2.69).toInt(),
-                    true
-                )
-                image.value = WImage(
-                    imageUri,
-                    bitMap
-                )
-                CoroutineScope(Dispatchers.IO).launch {
-                    Palette.from(bitMap).generate().let { palette ->
-                        containerColor.value =
-                            (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
-                                ?: Color(defaultContainerColor)).copy(
-                                alpha = 0.8f
-                            )
-                        containerTextColor.value =
-                            (palette.lightVibrantSwatch?.titleTextColor?.let { Color(it) }
-                                ?: Color.Black)
-                        iconColor.value =
-                            (palette.darkVibrantSwatch?.rgb?.let { Color(it) }
-                                ?: Color.Black)
-                    }
-                    updateUI(context, id)
-                }
+                updateUI(context, id)
             }
-            .build()
-        imageLoader.enqueue(request)
+            image.value = WImage(
+                imageUri,
+                bitMap
+            )
+            updateUI(context, id)
+        }
     }
 
 }

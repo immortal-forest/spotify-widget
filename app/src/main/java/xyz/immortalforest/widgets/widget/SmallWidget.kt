@@ -18,11 +18,6 @@ import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import androidx.glance.unit.ColorProvider
 import androidx.palette.graphics.Palette
-import coil.ImageLoader
-import coil.decode.BitmapFactoryDecoder
-import coil.decode.Decoder
-import coil.disk.DiskCache
-import coil.request.ImageRequest
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.spotify.protocol.types.ImageUri
 import com.spotify.protocol.types.PlayerRestrictions
@@ -32,7 +27,8 @@ import kotlinx.coroutines.launch
 import xyz.immortalforest.widgets.widget.models.WImage
 import xyz.immortalforest.widgets.widget.presentation.Loading
 import xyz.immortalforest.widgets.widget.util.SpotifyHelper
-import java.io.File
+import xyz.immortalforest.widgets.widget.util.imageLoaderr
+import xyz.immortalforest.widgets.widget.util.requestAsyncImage
 
 
 class SmallWidgetReceiver : GlanceAppWidgetReceiver() {
@@ -59,22 +55,10 @@ class SmallWidget : GlanceAppWidget() {
     private val containerColor = mutableStateOf(Color(defaultContainerColor).copy(alpha = 0.5f))
     private val iconColor = mutableStateOf(Color(defaultIconColor))
 
-    private lateinit var imageLoader: ImageLoader
-
     override val sizeMode: SizeMode
         get() = SizeMode.Exact
 
     override suspend fun provideGlance(context: Context, id: GlanceId) {
-        imageLoader = ImageLoader.Builder(context.applicationContext)
-            .diskCache {
-                val cacheDir = File(context.externalCacheDir?.absolutePath.toString(), "album")
-                cacheDir.mkdirs()
-                DiskCache.Builder()
-                    .directory(cacheDir)
-                    .maxSizeBytes(1024 * 1024 * 25)
-                    .build()
-            }
-            .build()
 
         spotifyHelper.new(context, id)
         connectToSpotify()
@@ -159,43 +143,32 @@ class SmallWidget : GlanceAppWidget() {
     }
 
     private fun loadImage(context: Context, id: GlanceId, imageUri: ImageUri) {
-        val uri = Regex("spotify:image:(.*)").find(imageUri.raw.toString())?.groups?.get(1)?.value
-            ?: imageUri.raw.toString().replace("spotify:image:", "")
-
-        val request = ImageRequest.Builder(context)
-            .data("https://i.scdn.co/image/$uri")
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
-            .decoderFactory(
-                Decoder.Factory { result, options, _ ->
-                    return@Factory BitmapFactoryDecoder(result.source, options)
-                }
+        val imageLoader = context.imageLoaderr
+        imageLoader.requestAsyncImage(context, imageUri) { drawable ->
+            val bitMap = Bitmap.createScaledBitmap(
+                (drawable as BitmapDrawable).bitmap,
+                (150 * 2.6).toInt(), (150 * 2.6).toInt(),
+                true
             )
-            .target { drawable ->
-                val bitMap = Bitmap.createScaledBitmap(
-                    (drawable as BitmapDrawable).bitmap,
-                    (150 * 2.6).toInt(), (150 * 2.6).toInt(),
-                    true
-                )
-                image.value = WImage(
-                    imageUri,
-                    bitMap
-                )
-                CoroutineScope(Dispatchers.IO).launch {
-                    Palette.from(bitMap).generate().let { palette ->
-                        containerColor.value =
-                            (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
-                                ?: Color(defaultContainerColor)).copy(
-                                alpha = 0.5f
-                            )
-                        iconColor.value =
-                            (palette.darkVibrantSwatch?.titleTextColor?.let { Color(it) }
-                                ?: Color(defaultIconColor))
-                    }
-                    updateUI(context, id)
+            CoroutineScope(Dispatchers.IO).launch {
+                Palette.from(bitMap).generate().let { palette ->
+                    containerColor.value =
+                        (palette.lightVibrantSwatch?.rgb?.let { Color(it) }
+                            ?: Color(defaultContainerColor)).copy(
+                            alpha = 0.5f
+                        )
+                    iconColor.value =
+                        (palette.darkVibrantSwatch?.titleTextColor?.let { Color(it) }
+                            ?: Color(defaultIconColor))
                 }
+                updateUI(context, id)
             }
-            .build()
-        imageLoader.enqueue(request)
+            image.value = WImage(
+                imageUri,
+                bitMap
+            )
+            updateUI(context, id)
+        }
     }
 
 }
