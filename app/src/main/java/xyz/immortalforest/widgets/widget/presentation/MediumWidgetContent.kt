@@ -39,165 +39,165 @@ import xyz.immortalforest.widgets.widget.util.SpotifyHelper
 
 @Composable
 fun MediumContent(
-        spotifyHelper: SpotifyHelper,
-        loading: Boolean,
-        playerRestrictions: PlayerRestrictions,
-        imageBitmap: Bitmap,
-        isPaused: Boolean,
-        containerColor: Color,
-        containerTextColor: Color,
-        iconColor: Color,
-        track: WTrack,
-        imageClick: () -> Unit,
-        onSuccessAction: (Context, GlanceId) -> Unit,
-        onErrorAction: () -> Unit,
+    spotifyHelper: SpotifyHelper,
+    loading: Boolean,
+    playerRestrictions: PlayerRestrictions,
+    imageBitmap: Bitmap,
+    isPaused: Boolean,
+    containerColor: Color,
+    containerTextColor: Color,
+    iconColor: Color,
+    track: WTrack,
+    imageClick: () -> Unit,
+    onSuccessAction: (Context, GlanceId) -> Unit,
+    onErrorAction: () -> Unit,
 ) {
     Box(
-            modifier = GlanceModifier
-                    .fillMaxSize(),
-            contentAlignment = Alignment.Center
+        modifier = GlanceModifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
         Box(
-                modifier = GlanceModifier
-                        .cornerRadius(16.dp)
-                        .background(containerColor)
-                        .padding(4.dp)
-                        .wrapContentSize(),
-                contentAlignment = Alignment.Center
+            modifier = GlanceModifier
+                .cornerRadius(16.dp)
+                .background(containerColor)
+                .padding(4.dp)
+                .wrapContentSize(),
+            contentAlignment = Alignment.Center
         ) {
             Box(
-                    modifier = GlanceModifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+                modifier = GlanceModifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
             ) {
                 Row(
-                        modifier = GlanceModifier.fillMaxSize()
+                    modifier = GlanceModifier.fillMaxSize()
                 ) {
 
                     Box(
-                            modifier = GlanceModifier
-                                    .size(92.dp, 95.dp)
-                                    .cornerRadius(12.dp),
-                            contentAlignment = Alignment.Center
+                        modifier = GlanceModifier
+                            .size(92.dp, 95.dp)
+                            .cornerRadius(12.dp),
+                        contentAlignment = Alignment.Center
                     ) {
                         Image(
-                                provider = ImageProvider(imageBitmap),
-                                contentDescription = "Album art",
-                                contentScale = ContentScale.FillBounds,
-                                modifier = GlanceModifier.fillMaxSize()
-                                        .clickable(imageClick)
+                            provider = ImageProvider(imageBitmap),
+                            contentDescription = "Album art",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = GlanceModifier.fillMaxSize()
+                                .clickable(imageClick)
                         )
                     }
 //                    Spacer(
 //                        modifier = GlanceModifier.size(12.dp, 0.dp)
 //                    )
                     Column(
-                            modifier = GlanceModifier.fillMaxSize()
-                                    .padding(end = 12.dp, top = 5.dp),
-                            verticalAlignment = Alignment.Top,
-                            horizontalAlignment = Alignment.CenterHorizontally
+                        modifier = GlanceModifier.fillMaxSize()
+                            .padding(end = 12.dp, top = 5.dp),
+                        verticalAlignment = Alignment.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         val trackNameLen = track.name.length
                         val artistsNameLen = track.getArtists().length
 
                         Text(
-                                text = track.name,
-                                maxLines = 1,
-                                style = TextStyle(
-                                        color = ColorProvider(containerTextColor),
-                                        fontSize = 14.sp,
-                                        fontStyle = FontStyle.Normal,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = FontFamily.SansSerif,
-                                        textAlign = if (trackNameLen > 18) {
-                                            TextAlign.Left
-                                        } else {
-                                            TextAlign.Center
-                                        }
-                                ),
-                                modifier = GlanceModifier.size(width = 150.dp, height = 20.dp)
-                                        .padding(start = 12.dp)
+                            text = track.name,
+                            maxLines = 1,
+                            style = TextStyle(
+                                color = ColorProvider(containerTextColor),
+                                fontSize = 14.sp,
+                                fontStyle = FontStyle.Normal,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = FontFamily.SansSerif,
+                                textAlign = if (trackNameLen > 18) {
+                                    TextAlign.Left
+                                } else {
+                                    TextAlign.Center
+                                }
+                            ),
+                            modifier = GlanceModifier.size(width = 150.dp, height = 20.dp)
+                                .padding(start = 12.dp)
                         )
                         Spacer(modifier = GlanceModifier.size(width = 0.dp, height = 4.dp))
                         Text(
-                                text = track.getArtists(),
-                                maxLines = 1,
-                                style = TextStyle(
-                                        color = ColorProvider(containerTextColor),
-                                        fontSize = 12.sp,
-                                        fontStyle = FontStyle.Italic,
-                                        fontWeight = FontWeight.Medium,
-                                        fontFamily = FontFamily.SansSerif,
-                                        textAlign = if (artistsNameLen > 20) {
-                                            TextAlign.Start
-                                        } else {
-                                            TextAlign.Center
-                                        },
-                                        textDecoration = TextDecoration.Underline
-                                ),
-                                modifier = GlanceModifier.size(width = 140.dp, height = 15.dp)
-                                        .padding(start = 12.dp)
+                            text = track.getArtists(),
+                            maxLines = 1,
+                            style = TextStyle(
+                                color = ColorProvider(containerTextColor),
+                                fontSize = 12.sp,
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Medium,
+                                fontFamily = FontFamily.SansSerif,
+                                textAlign = if (artistsNameLen > 20) {
+                                    TextAlign.Start
+                                } else {
+                                    TextAlign.Center
+                                },
+                                textDecoration = TextDecoration.Underline
+                            ),
+                            modifier = GlanceModifier.size(width = 140.dp, height = 15.dp)
+                                .padding(start = 12.dp)
                         )
                         Spacer(modifier = GlanceModifier.size(width = 0.dp, height = 10.dp))
                         Row(
-                                modifier = GlanceModifier.padding(start = 12.dp)
+                            modifier = GlanceModifier.padding(start = 12.dp)
                         ) {
                             Image(
-                                    provider = ImageProvider(R.drawable.prev_foreground),
-                                    contentDescription = "Previous",
-                                    modifier = GlanceModifier.size(40.dp)
-                                            .cornerRadius(50.dp)
-                                            .clickable {
-                                                spotifyHelper.handleAction(
-                                                        action = "prev",
-                                                        value = playerRestrictions.canSkipPrev.toString(),
-                                                        loading = loading,
-                                                        onSuccess = onSuccessAction,
-                                                        onError = onErrorAction
-                                                )
-                                            },
-                                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                                provider = ImageProvider(R.drawable.prev_foreground),
+                                contentDescription = "Previous",
+                                modifier = GlanceModifier.size(40.dp)
+                                    .cornerRadius(50.dp)
+                                    .clickable {
+                                        spotifyHelper.handleAction(
+                                            action = "prev",
+                                            value = playerRestrictions.canSkipPrev.toString(),
+                                            loading = loading,
+                                            onSuccess = onSuccessAction,
+                                            onError = onErrorAction
+                                        )
+                                    },
+                                colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                             )
                             Image(
-                                    provider = ImageProvider(
-                                            if (isPaused) {
-                                                R.drawable.play_foreground
+                                provider = ImageProvider(
+                                    if (isPaused) {
+                                        R.drawable.play_foreground
+                                    } else {
+                                        R.drawable.pause_foreground
+                                    }
+                                ),
+                                contentDescription = "Play/Pause",
+                                modifier = GlanceModifier.size(40.dp)
+                                    .cornerRadius(50.dp)
+                                    .clickable {
+                                        spotifyHelper.handleAction(
+                                            action = if (isPaused) {
+                                                "play"
                                             } else {
-                                                R.drawable.pause_foreground
-                                            }
-                                    ),
-                                    contentDescription = "Play/Pause",
-                                    modifier = GlanceModifier.size(40.dp)
-                                            .cornerRadius(50.dp)
-                                            .clickable {
-                                                spotifyHelper.handleAction(
-                                                        action = if (isPaused) {
-                                                            "play"
-                                                        } else {
-                                                            "pause"
-                                                        },
-                                                        value = "",
-                                                        loading = loading,
-                                                        onSuccess = onSuccessAction,
-                                                        onError = onErrorAction
-                                                )
+                                                "pause"
                                             },
-                                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                                            value = "",
+                                            loading = loading,
+                                            onSuccess = onSuccessAction,
+                                            onError = onErrorAction
+                                        )
+                                    },
+                                colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                             )
                             Image(
-                                    provider = ImageProvider(R.drawable.next_foreground),
-                                    contentDescription = "Next",
-                                    modifier = GlanceModifier.size(40.dp)
-                                            .cornerRadius(50.dp)
-                                            .clickable {
-                                                spotifyHelper.handleAction(
-                                                        action = "next",
-                                                        value = playerRestrictions.canSkipNext.toString(),
-                                                        loading = loading,
-                                                        onSuccess = onSuccessAction,
-                                                        onError = onErrorAction
-                                                )
-                                            },
-                                    colorFilter = ColorFilter.tint(ColorProvider(iconColor))
+                                provider = ImageProvider(R.drawable.next_foreground),
+                                contentDescription = "Next",
+                                modifier = GlanceModifier.size(40.dp)
+                                    .cornerRadius(50.dp)
+                                    .clickable {
+                                        spotifyHelper.handleAction(
+                                            action = "next",
+                                            value = playerRestrictions.canSkipNext.toString(),
+                                            loading = loading,
+                                            onSuccess = onSuccessAction,
+                                            onError = onErrorAction
+                                        )
+                                    },
+                                colorFilter = ColorFilter.tint(ColorProvider(iconColor))
                             )
 
                         }
@@ -207,13 +207,13 @@ fun MediumContent(
 
             }
             Box(
-                    modifier = GlanceModifier.fillMaxSize(),
-                    contentAlignment = Alignment.TopEnd
+                modifier = GlanceModifier.fillMaxSize(),
+                contentAlignment = Alignment.TopEnd
             ) {
                 Image(
-                        provider = ImageProvider(R.drawable.spotify),
-                        contentDescription = "Spotify logo",
-                        modifier = GlanceModifier.size(12.dp)
+                    provider = ImageProvider(R.drawable.spotify),
+                    contentDescription = "Spotify logo",
+                    modifier = GlanceModifier.size(12.dp)
                 )
             }
 

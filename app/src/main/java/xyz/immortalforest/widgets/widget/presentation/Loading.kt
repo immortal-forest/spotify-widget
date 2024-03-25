@@ -10,11 +10,11 @@ import androidx.glance.unit.ColorProvider
 @Composable
 fun Loading() {
     Column(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalAlignment = Alignment.CenterHorizontally
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-                color = ColorProvider(Color.DarkGray)
+            color = ColorProvider(Color.DarkGray)
         )
     }
 }
